@@ -3,344 +3,198 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AX Staking DApp - Mobile UI</title>
+  <title>AX portfolio</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Ethers.js v5 -->
+  <!-- Ethers.js -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 
   <style>
-    /* Background & center layout similar to screenshot */
-    body { background: linear-gradient(180deg,#081024,#0f1a2b); }
-    /* Circular futuristic timer */
-    .outer-ring{
-      width: 230px; height: 230px; border-radius: 50%;
+    body { background: linear-gradient(180deg, #081024, #0f1a2b); }
+    .outer-ring {
+      width: 220px; height: 220px; border-radius: 50%;
       background: radial-gradient(circle at 30% 20%, rgba(59,130,246,0.08), rgba(2,6,23,0.6));
-      display:flex; align-items:center; justify-content:center;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 8px 30px rgba(14,51,94,0.6);
       position: relative;
       border: 6px solid rgba(7, 243, 46, 0.8);
       overflow: visible;
     }
     .ring-decor {
-      position:absolute; inset: -12px; border-radius:50%;
-      background: conic-gradient(rgba(96,165,250,0.06), transparent 20%,
-                  rgba(59,130,246,0.06) 40%, transparent 60%);
+      position: absolute; inset: -12px; border-radius: 50%;
+      background: conic-gradient(rgba(96,165,250,0.06), transparent 20%, rgba(59,130,246,0.06) 40%, transparent 60%);
       filter: blur(6px);
       animation: rotate 18s linear infinite;
     }
-    .inner-circle{
-      width: 220px; height:220px; border-radius:50%;
+    .inner-circle {
+      width: 210px; height: 210px; border-radius: 50%;
       background: radial-gradient(circle at 50% 45%, #08304f, #051826);
       border: 4px solid rgba(96,165,250,0.12);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      color: #e6f0ff;
-      text-align:center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #e6f0ff; text-align: center;
       box-shadow: inset 0 8px 30px rgba(2,6,23,0.8);
     }
-    @keyframes rotate { from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
-
-    /* mobile friendly size adjustments */
-    @media (max-width: 420px) {
-      .outer-ring { width: 86vw; height: 86vw; }
-      .inner-circle { width: 60vw; height: 60vw; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @media (max-width: 480px) {
+      .outer-ring { width: 80vw; height: 80vw; }
+      .inner-circle { width: 70vw; height: 70vw; }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center text-white">
 
-  <!-- Top bar -->
-  <div class="w-full bg-blue-900/90 backdrop-blur-sm text-white px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div>
-        <p class="text-2xl opacity-80">𝔸𝕤𝕚𝕒𝕩 𝕊𝕞𝕒𝕣𝕥 ℙ𝕠𝕣𝕥𝕗𝕠𝕝𝕚𝕠</p>
-        <p id="topUserId" class="text-sm font-semibold">my wallet address</address></p>
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-        <span class="absolute -top-1 -right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-      </div>
+  <!-- 🔹 Top bar -->
+  <div class="w-full bg-blue-900/90 backdrop-blur-sm px-4 py-3 flex items-center justify-between">
+    <div>
+      <p class="text-xl font-semibold">𝔸𝕤𝕚𝕒𝕩 𝕊𝕞𝕒𝕣𝕥 ℙ𝕠𝕣𝕥𝕗𝕠𝕝𝕚𝕠</p>
+      <p id="topUserId" class="text-xs opacity-75">my wallet address</p>
     </div>
   </div>
 
-  <!-- Center countdown -->
+  <!-- 🔸 Center countdown -->
   <div class="flex-1 w-full flex items-center justify-center py-6">
-    <div class="outer-ring" aria-hidden="true">
+    <div class="outer-ring">
       <div class="ring-decor"></div>
-
       <div class="inner-circle">
-        <!-- Only countdown text inside (user requested) -->
         <div class="text-center">
-           <div class="text-2xl font-semibold">𝔸𝕊𝕀𝔸𝕏</div>
+          <div class="text-2xl font-semibold">𝔸𝕊𝕀𝔸𝕏</div>
           <div id="countTime" class="text-4xl font-extrabold my-1">--:--:--</div>
+          <div class="text-xs opacity-70 mt-2">Next claim countdown</div>
         </div>
-        <div class="text-xs opacity-70 mt-2">Next claim countdown</div>
       </div>
     </div>
   </div>
 
-  <!-- Action buttons (below countdown) -->
-  <div class="w-full max-w-md px-4 pb-4">
-    <div class="bg-white/6 backdrop-blur-sm rounded-2xl p-4 shadow-md border border-white/6">
-      <p id="walletAddr" class="text-xs text-sky-200 break-words mb-2">Not connected</p>
+  <!-- 🔹 Action Buttons Section -->
+  <div class="w-full max-w-sm px-4 pb-4">
+    <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-md">
+      <p id="walletAddr" class="text-xs text-sky-200 mb-3 break-words">Not connected</p>
 
       <div class="grid grid-cols-2 gap-3">
-        <button id="connectBtn" class="py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-semibold">𝐂𝐎𝐍𝐍𝐄𝐂𝐓 𝐖𝐀𝐋𝐋𝐄𝐓</button>
-        <button id="stakeBtn" class="py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-semibold">𝐀𝐏𝐏𝐑𝐎𝐕𝐄 & 𝐒𝐓𝐀𝐊𝐄</button>
-        <button id="claimBtn" class="col-span-2 py-3 rounded-lg bg-green-500 text-white text-sm font-semibold">⚡️𝐂𝐋𝐀𝐈𝐌 0.40 𝐀𝐒𝐈𝐀𝐗⚡️</button>
-        <button id="showAxIdBtn" class="col-span-1 py-2 rounded-lg border border-white/10 text-white text-sm"> 𝐒𝐇𝐎𝐖 𝐌𝐘 𝐈𝐃 </button>
-        <button id="remainingBtn" class="col-span-1 py-2 rounded-lg border border-white/10 text-white text-sm">𝐑𝐄𝐌𝐀𝐈𝐍𝐈𝐍𝐆 𝐂𝐋𝐀𝐈𝐌</button>
+        <button id="connectBtn" class="py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-semibold">CONNECT</button>
+        <button id="stakeBtn" class="py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-semibold">STAKE</button>
+        <button id="claimBtn" class="col-span-2 py-3 rounded-lg bg-green-500 text-white text-sm font-semibold">⚡ CLAIM 0.40 ASIAX ⚡</button>
+        <button id="showAxIdBtn" class="py-2 rounded-lg border border-white/20 text-white text-sm">MY ID</button>
+        <button id="remainingBtn" class="py-2 rounded-lg border border-white/20 text-white text-sm">REMAINING</button>
+        <button id="backHomeBtn" class="col-span-2 py-2 rounded-lg bg-orange-700 hover:bg-orange-800 text-white text-sm font-semibold">𝐀𝐒𝐈𝐀𝐗 𝐏𝐑𝐎</button>
       </div>
 
       <p id="message" class="text-center text-sm mt-3 min-h-[1.4rem]"></p>
     </div>
-  </div>
+  </div><script>
+    const tokenAddress = "0xe36b5223d488322fac2ddda937e5ab226e83fbbd";
+    const contractAddress = "0x614799D80B547EcF0C04496aaa9632FfdE98d1bA";
+    const STAKE_AMOUNT_RAW = "200";
+    const CLAIM_INTERVAL_SECONDS = 86400;
 
-<script>
-  // ---------- CONFIG - replace these with your real addresses ----------
-  const tokenAddress = "0xe36b5223d488322fac2ddda937e5ab226e83fbbd";       // ERC20 AX token
-  const contractAddress = "0x614799D80B547EcF0C04496aaa9632FfdE98d1bA"; // Staking contract
-  // -------------------------------------------------------------------
+    const abi = [
+      "function stake() external",
+      "function claimDaily() external",
+      "function getDisplayId(address user) view returns (string)",
+      "function canClaim(address user) view returns (bool)",
+      "function remainingClaims(address user) view returns (uint16)",
+      "function stakes(address) view returns (bool active,uint256 stakedAt,uint256 lastClaim,uint16 claimsMade)",
+      "event Staked(address indexed user,uint256 amount,string axId)",
+      "event Claimed(address indexed user,uint16 claimIndex,uint256 amount)"
+    ];
+    const erc20Abi = [
+      "function approve(address spender,uint256 amount) public returns(bool)",
+      "function decimals() view returns(uint8)"
+    ];
 
-  // If token decimals differ, adjust parseUnits amounts
-  const STAKE_AMOUNT_RAW = "200";   // numeric string
-  const CLAIM_AMOUNT_RAW = "0.4";
+    let provider, signer, contract, tokenContract, userAddress = null, decimals = 18;
+    const msg = (t, c="white") => {
+      const el = document.getElementById("message");
+      el.innerText = t; el.style.color = c;
+      clearTimeout(msg._t); msg._t = setTimeout(()=>el.innerText="", 4000);
+    };
+    const shortAddr = a => a ? a.slice(0,6)+"..."+a.slice(-4) : "--";
+    const countEl = document.getElementById("countTime");
+    let countdownTimer = null;
 
-  // CLAIM_INTERVAL_SECONDS: set to 86400 for 24h interval in prod.
-  // For testing on local/testnet you can set to 60.
-  const CLAIM_INTERVAL_SECONDS = 86400; // <-- change to 60 for fast testing
-
-  // ABI - minimal required functions/events
-  const abi = [
-    "function stake() external",
-    "function claimDaily() external",
-    "function getDisplayId(address user) view returns (string)",
-    "function canClaim(address user) view returns (bool)",
-    "function remainingClaims(address user) view returns (uint16)",
-    "function stakes(address) view returns (bool active, uint256 stakedAt, uint256 lastClaim, uint16 claimsMade)",
-    "event Staked(address indexed user, uint256 amount, string axId)",
-    "event Claimed(address indexed user, uint16 claimIndex, uint256 amount)"
-  ];
-
-  // Generic ERC20 ABI fragment for approve
-  const erc20Abi = ["function approve(address spender,uint256 amount) public returns(bool)","function decimals() view returns (uint8)"];
-
-  let provider, signer, contract, tokenContract;
-  let userAddress = null;
-  let decimals = 18;
-
-  // UI elements
-  const walletAddrEl = document.getElementById("walletAddr");
-  const messageEl = document.getElementById("message");
-  const countDaysEl = document.getElementById("countDays");
-  const countTimeEl = document.getElementById("countTime");
-  const topUserIdEl = document.getElementById("topUserId");
-
-  // Buttons
-  const connectBtn = document.getElementById("connectBtn");
-  const stakeBtn = document.getElementById("stakeBtn");
-  const claimBtn = document.getElementById("claimBtn");
-  const showAxIdBtn = document.getElementById("showAxIdBtn");
-  const remainingBtn = document.getElementById("remainingBtn");
-
-  // Helpers
-  function showMessage(msg, color="white") {
-    messageEl.innerText = msg;
-    messageEl.style.color = color;
-    clearTimeout(showMessage._t);
-    showMessage._t = setTimeout(()=>{ messageEl.innerText = ""; }, 5000);
-  }
-
-  function shortAddr(addr) {
-    if(!addr) return "--";
-    return addr.slice(0,6) + "..." + addr.slice(-4);
-  }
-
-  // Connect wallet
-  async function connectWallet() {
-    try {
-      if(!window.ethereum) return alert("Please install MetaMask or compatible wallet.");
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      userAddress = await signer.getAddress();
-      walletAddrEl.innerText = shortAddr(userAddress);
-      topUserIdEl.innerText = shortAddr(userAddress);// instantiate contracts
-      contract = new ethers.Contract(contractAddress, abi, signer);
-      tokenContract = new ethers.Contract(tokenAddress, erc20Abi, signer);
-
-      // try to fetch token decimals (safe)
-      try {
-        decimals = await tokenContract.decimals();
-      } catch(e){ decimals = 18; }
-
-      showMessage("Wallet connected", "#a7f3d0");
-      updateUserInfo();
-    } catch (e) {
-      console.error(e);
-      showMessage("Connection failed: " + (e.message||e), "salmon");
+    async function connectWallet(){
+      try{
+        if(!window.ethereum) return alert("Install MetaMask");
+        await window.ethereum.request({ method:"eth_requestAccounts" });
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        userAddress = await signer.getAddress();
+        document.getElementById("walletAddr").innerText = shortAddr(userAddress);
+        document.getElementById("topUserId").innerText = shortAddr(userAddress);
+        contract = new ethers.Contract(contractAddress, abi, signer);
+        tokenContract = new ethers.Contract(tokenAddress, erc20Abi, signer);
+        try{ decimals = await tokenContract.decimals(); }catch{}
+        msg("Wallet connected","#a7f3d0");
+        updateCountdown();
+      }catch(e){ msg("Connection failed","salmon"); }
     }
-  }
 
-  // Update simple user info (AX ID, remaining claims)
-  async function updateUserInfo() {
-    if(!signer || !contract) return;
-    try {
-      const axId = await contract.getDisplayId(userAddress);
-      // Only show axId in a pop-up button; top bar remains short addr
-      showMessage("AX ID: " + (axId || "-"), "#bfdbfe");
-      // Update countdown immediately
-      await updateCountdown();
-    } catch(e){
-      console.log("updateUserInfo err", e);
+    async function stake(){
+      if(!signer) return msg("Connect wallet first","salmon");
+      try{
+        const amount = ethers.utils.parseUnits(STAKE_AMOUNT_RAW,decimals);
+        const approveTx = await tokenContract.approve(contractAddress,amount);
+        msg("Approving...","#fef3c7");
+        await approveTx.wait();
+        const tx = await contract.stake();
+        msg("Staking...","#fef3c7");
+        await tx.wait();
+        msg("✅ Staked successfully","#bbf7d0");
+      }catch(e){ msg("Stake error","salmon"); }
     }
-  }
 
-  // Approve & stake
-  async function stake() {
-    if(!signer) return showMessage("Connect wallet first", "salmon");
-    try {
-      // compute amount with decimals
-      const amount = ethers.utils.parseUnits(STAKE_AMOUNT_RAW, decimals);
-      const approveTx = await tokenContract.approve(contractAddress, amount);
-      showMessage("Approve tx sent, waiting...", "#fef3c7");
-      await approveTx.wait();
-      showMessage("Approve confirmed, staking...", "#fef3c7");
-      const tx = await contract.stake();
-      await tx.wait();
-      showMessage("Staked successfully ✅", "#bbf7d0");
-      updateUserInfo();
-    } catch(e) {
-      console.error(e);
-      showMessage("Stake error: " + (e.data?.message || e.message || e), "salmon");
+    async function claim(){
+      if(!signer) return msg("Connect wallet first","salmon");
+      try{
+        const tx = await contract.claimDaily();
+        msg("Claiming...","#fef3c7");
+        await tx.wait();
+        msg("✅ Claimed successfully","#bbf7d0");
+      }catch(e){ msg("Claim error","salmon"); }
     }
-  }
 
-  // Claim
-  async function claim() {
-    if(!signer) return showMessage("Connect wallet first", "salmon");
-    try {
-      const tx = await contract.claimDaily();
-      showMessage("Claim tx sent...", "#fef3c7");
-      await tx.wait();
-      showMessage("Claim successful ✅", "#bbf7d0");
-      updateUserInfo();
-    } catch(e) {
-      console.error(e);
-      showMessage("Claim error: " + (e.data?.message || e.message || e), "salmon");
+    async function showAxId(){
+      if(!signer) return msg("Connect wallet first","salmon");
+      try{
+        const axId = await contract.getDisplayId(userAddress);
+        alert("Your AX ID: "+axId);
+      }catch{ msg("Unable to fetch ID","salmon"); }
     }
-  }
 
-  // Show AX ID (on button click)
-  async function showAxId() {
-    if(!signer) return showMessage("Connect wallet first", "salmon");
-    try {
-      const axId = await contract.getDisplayId(userAddress);
-      alert("Your AX ID:\n\n" + (axId || "-"));
-    } catch(e) {
-      console.error(e);
-      showMessage("Unable to fetch AX ID", "salmon");
+    async function showRemaining(){
+      if(!signer) return msg("Connect wallet first","salmon");
+      try{
+        const rem = await contract.remainingClaims(userAddress);
+        alert("Remaining Claims: "+rem.toString());
+      }catch{ msg("Unable to fetch","salmon"); }
     }
-  }
 
-  // Show remaining claims
-  async function showRemaining() {
-    if(!signer) return showMessage("Connect wallet first", "salmon");
-    try {
-      const rem = await contract.remainingClaims(userAddress);
-      alert("Remaining claims: " + rem.toString());
-    } catch(e) {
-      console.error(e);
-      showMessage("Unable to fetch remaining claims", "salmon");
+    async function updateCountdown(){
+      if(!signer) return countEl.innerText="--:--:--";
+      try{
+        const info = await contract.stakes(userAddress);const lastClaim = Number(info.lastClaim);
+        const now = Math.floor(Date.now()/1000);
+        const target = lastClaim + CLAIM_INTERVAL_SECONDS;
+        if(!info.active){ countEl.innerText="Not Staked"; return; }
+        if(countdownTimer) clearInterval(countdownTimer);
+        const tick = ()=>{
+          const diff = Math.max(0, target - Math.floor(Date.now()/1000));
+          const h = String(Math.floor((diff%86400)/3600)).padStart(2,'0');
+          const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
+          const s = String(diff%60).padStart(2,'0');
+          countEl.innerText = diff===0 ? "00:00:00" : `${h}:${m}:${s}`;
+        };
+        tick(); countdownTimer = setInterval(tick,1000);
+      }catch{ countEl.innerText="--:--:--"; }
     }
-  }
 
-  // Countdown logic using contract.stakes(user).lastClaim
-  let countdownTimer = null;
-  async function updateCountdown() {
-    if(!signer || !contract) {
-      countTimeEl.innerText = "--:--:--";
-      return;
-    }
-    try {
-      const stakeInfo = await contract.stakes(userAddress);
-      // stakeInfo fields: (bool active, uint256 stakedAt, uint256 lastClaim, uint16 claimsMade)
-      const lastClaim = stakeInfo.lastClaim ? Number(stakeInfo.lastClaim.toString()) : 0;
-      const now = Math.floor(Date.now()/1000);
-      // If lastClaim == 0 (never claimed), you can consider countdown starts from stakedAt or available instantly.
-      // We'll treat lastClaim==0 as available now.
-      let target = lastClaim === 0 ? now : lastClaim + CLAIM_INTERVAL_SECONDS;
-      // For clarity, if user hasn't staked (active = false) show placeholder
-      const active = !!stakeInfo.active;
-      if(!active) {
-        countTimeEl.innerText = "Not staked";
-        return;
-      }// Clear any previous interval
-      if(countdownTimer) clearInterval(countdownTimer);
-      // update once and then set interval
-      const tick = () => {
-        const now2 = Math.floor(Date.now()/1000);
-        let diff = target - now2;
-        if(diff < 0) diff = 0;
-        const days = Math.floor(diff / (86400));
-        const hours = Math.floor((diff % 86400) / 3600);
-        const minutes = Math.floor((diff % 3600) / 60);
-        const seconds = Math.floor(diff % 60);
-
-        if(diff === 0) {
-          countTimeEl.innerText = "00:00:00";
-        } else {
-          // If days >0 show days; otherwise just HH:MM:SS
-          countTimeEl.innerText = 
-            String(hours).padStart(2,'0') + ":" +
-            String(minutes).padStart(2,'0') + ":" +
-            String(seconds).padStart(2,'0');
-        }
-      };
-      tick();
-      countdownTimer = setInterval(tick, 1000);
-    } catch(e) {
-      console.error("updateCountdown err", e);
-      countTimeEl.innerText = "--:--:--";
-    }
-  }
-
-  // Event listeners
-  connectBtn.addEventListener("click", connectWallet);
-  stakeBtn.addEventListener("click", stake);
-  claimBtn.addEventListener("click", claim);
-  showAxIdBtn.addEventListener("click", showAxId);
-  remainingBtn.addEventListener("click", showRemaining);
-
-  // Auto refresh if account/network changes
-  if(window.ethereum) {
-    window.ethereum.on("accountsChanged", async (accounts) => {
-      if(accounts.length === 0) {
-        userAddress = null;
-        walletAddrEl.innerText = "Not connected";
-        topUserIdEl.innerText = "M";
-        showMessage("Wallet disconnected", "salmon");
-      } else {
-        // re-init
-        connectWallet();
-      }
-    });
-    window.ethereum.on("chainChanged", (_chainId) => {
-      // reload to reset provider
-      window.location.reload();
-    });
-  }
-
-  // Optional: try to auto-connect if previously authorized
-  (async function tryAutoConnect(){
-    try {
-      if(window.ethereum && window.ethereum.selectedAddress) {
-        await connectWallet();
-      }
-    } catch(e){}
-  })();
-
-</script>
+    document.getElementById("connectBtn").onclick = connectWallet;
+    document.getElementById("stakeBtn").onclick = stake;
+    document.getElementById("claimBtn").onclick = claim;
+    document.getElementById("showAxIdBtn").onclick = showAxId;
+    document.getElementById("remainingBtn").onclick = showRemaining;
+    document.getElementById("backHomeBtn").onclick = ()=>window.location.href="axindex.html";
+  </script>
 </body>
 </html>
